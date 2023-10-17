@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { CreateBlogDto } from '../Repos/BlogsRepo/Dtos/CreateBlogDto';
 import { BlogsRepoService } from '../Repos/BlogsRepo/blogsRepo.service';
+import { BlogService } from './blogs.service';
 
 
 
@@ -8,18 +9,20 @@ import { BlogsRepoService } from '../Repos/BlogsRepo/blogsRepo.service';
 export class BlogController {
   //1ый слой
   //выполняющий router функции
-  constructor(private blogsRepo: BlogsRepoService) {}
+  constructor(private blogService: BlogService) {}
 
-  //Blogs
-  // @Get()
-  // getBlog(): string {
-  //   return "get blogs"
-  // }
+  Blogs
+  @Get()
+  async getBlog() {
+    let blogs = await this.blogService.Find();
+
+    return blogs.executionResultObject;
+  }
 
   @Post()
   async saveBlog(@Body() blog: CreateBlogDto){
-    let savedBlog = await this.blogsRepo.create(blog);
-    return savedBlog;
+    let savedBlog = await this.blogService.Save(blog);
+    return savedBlog.executionResultObject;
   }
 
   // @Get(":id")
