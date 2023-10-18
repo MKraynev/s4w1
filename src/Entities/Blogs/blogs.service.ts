@@ -32,6 +32,14 @@ export class BlogService {
     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, blogs)
   }
 
+  public async FindById(id: string) {
+    let blog = await this.blogsRepo.findById(id);
+    if (blog)
+      return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, blog.toObject())
+
+    return new ServiceExecutionResult(ServiceExecutionResultStatus.NotFound)
+  }
+
   public async Update(id: string, newBlogData: UpdateBlogDto) {
     let blog = await this.blogsRepo.findById(id);
 
@@ -43,6 +51,16 @@ export class BlogService {
     let savedBlog = await this.blogsRepo.save(blog);
     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, savedBlog.toObject())
   }
+
+  public async Delete(id: string) {
+    let deleteBlog = await this.blogsRepo.deleteById(id)
+
+    if (deleteBlog)
+      return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, deleteBlog.toObject());
+
+      return new ServiceExecutionResult(ServiceExecutionResultStatus.NotFound);
+  }
+
 }
 
 

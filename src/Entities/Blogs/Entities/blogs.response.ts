@@ -2,7 +2,6 @@ import { Blog } from "src/Entities/Repos/BlogsRepo/Schemas/blog.schema";
 
 //TODO какой нейминг для такой сущности
 export class BlogResponse {
-
     public id: string;
     public name: string;
     public description: string;
@@ -10,8 +9,9 @@ export class BlogResponse {
     public createdAt: Date;
     public isMembership: boolean;
 
-    constructor(blogData: Blog & { id: string }) {
-        this.id = blogData.id;
+    constructor(id: string, blogData: Blog) {
+        //TODO есть ли более аккуратная форма?
+        this.id = id;
         this.name = blogData.name;
         this.description = blogData.description;
         this.websiteUrl = blogData.websiteUrl;

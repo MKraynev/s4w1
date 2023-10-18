@@ -22,11 +22,17 @@ export class BlogsRepoService {
     return await this.blogModel.find(searchPattern).skip(skip).limit(limit);
   }
   async update(blog: BlogDocument){
-    return (await blog.save()).toObject();
+    return (await blog.save());
   }
 
   async count(searchNameTerm?: string) {
     let searchPattern = searchNameTerm ? { name: searchNameTerm } : {};
     return await this.blogModel.count(searchPattern);
+  }
+
+  async deleteById(id: string){
+    let deletedBlog = await this.blogModel.findByIdAndDelete(id);
+
+    return deletedBlog || null;
   }
 }
