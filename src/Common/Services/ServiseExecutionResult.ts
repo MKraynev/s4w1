@@ -3,5 +3,4 @@ export class ServiceExecutionResult<ExecutionStatus, ExecutionResultObject> {
         public executionStatus: ExecutionStatus,
         public executionResultObject: ExecutionResultObject | null = null,
         public message: string | null = null) { }
-
 }

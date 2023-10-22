@@ -1,4 +1,4 @@
-import { Blog } from "src/Entities/Repos/BlogsRepo/Schemas/blog.schema";
+import { Blog } from "../../Repos/BlogsRepo/Schemas/blog.schema";
 
 //TODO какой нейминг для такой сущности
 export class BlogResponse {

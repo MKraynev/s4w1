@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { BlogsRepoService } from '../Repos/BlogsRepo/blogsRepo.service';
 import { CreateBlogDto } from '../Repos/BlogsRepo/Dtos/CreateBlogDto';
 import { UpdateBlogDto } from '../Repos/BlogsRepo/Dtos/UpdateBlogDto';
-import { ServiceExecutionResultStatus } from 'src/Common/Services/ServiceExecutionStatus';
-import { ServiceExecutionResult } from 'src/Common/Services/ServiseExecutionResult';
 import { Blog } from '../Repos/BlogsRepo/Schemas/blog.schema';
+import { ServiceExecutionResult } from '../../Common/Services/ServiseExecutionResult';
+import { ServiceExecutionResultStatus } from '../../Common/Services/ServiceExecutionStatus';
 
 @Injectable()
 export class BlogService {
