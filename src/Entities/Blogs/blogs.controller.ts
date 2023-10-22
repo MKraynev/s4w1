@@ -3,6 +3,7 @@ import { CreateBlogDto } from '../Repos/BlogsRepo/Dtos/CreateBlogDto';
 import { BlogService } from './blogs.service';
 import { UpdateBlogDto } from '../Repos/BlogsRepo/Dtos/UpdateBlogDto';
 import { ServiceExecutionResultStatus } from '../../Common/Services/ServiceExecutionStatus';
+import { ControllerBlogDto } from './Entities/blogs.controllerDto';
 
 
 
@@ -19,7 +20,9 @@ export class BlogController {
 
     switch (findBlogs.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        return findBlogs.executionResultObject;
+        //TODO можно ли объявить единый фильтр для Controller?
+        let blogs = findBlogs.executionResultObject.map(serviceBlog => new ControllerBlogDto(serviceBlog));
+        return blogs;
         break;
 
       default:
@@ -36,7 +39,8 @@ export class BlogController {
 
     switch (savedBlog.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        return savedBlog.executionResultObject;
+        let blog = new ControllerBlogDto(savedBlog.executionResultObject);
+        return blog;
         break;
 
       default:
@@ -50,7 +54,8 @@ export class BlogController {
     let findBlog = await this.blogService.FindById(id);
     switch (findBlog.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        return findBlog.executionResultObject;
+        let blog = new ControllerBlogDto(findBlog.executionResultObject);
+        return blog;
         break;
 
       default:
@@ -94,15 +99,4 @@ export class BlogController {
         throw new NotFoundException();
     }
   }
-
-  // //Blog posts
-  // @Get(":id/posts")
-  // GetBlogsPosts(){
-  //   return "blogs post"
-  // }
-
-  // @Post(":id/posts")
-  // SavePost(){
-  //   return "post for blog saved"
-  // }
 }
