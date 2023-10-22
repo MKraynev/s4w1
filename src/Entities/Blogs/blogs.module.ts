@@ -9,4 +9,4 @@ import { BlogsRepoModule } from '../Repos/BlogsRepo/blogsRepo.module';
   controllers: [BlogController],
   providers: [BlogService],
 })
-export class CatsModule {}
+export class BlogsModule {}

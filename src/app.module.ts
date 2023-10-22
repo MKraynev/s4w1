@@ -3,14 +3,14 @@ import { BlogController } from './Entities/Blogs/blogs.controller';
 import { BlogService } from './Entities/Blogs/blogs.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MONGO_URL } from './settings';
-import { BlogsRepoModule } from './Entities/Repos/BlogsRepo/blogsRepo.module';
+import { BlogsModule } from './Entities/Blogs/blogs.module';
 
 
 @Module({
   imports: [
     MongooseModule.forRoot(MONGO_URL),
-    BlogsRepoModule],
-  controllers: [BlogController],
-  providers: [BlogService],
+    BlogsModule],
+  controllers: [],
+  providers: [],
 })
 export class AppModule { }
