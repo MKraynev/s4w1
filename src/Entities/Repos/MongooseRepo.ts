@@ -1,7 +1,9 @@
-import { HydratedDocument, Model } from "mongoose";
+import mongoose, { Connection, HydratedDocument, Model } from "mongoose";
+import { MONGO_URL } from "../../settings";
 
 export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedDocument<ModelType>>{
-    constructor(private model: Model<ModelType>) { }
+  constructor(private model: Model<ModelType>) { }
+
 
   async save(createDTO: CreateDTO): Promise<EntityDocument> {
     const createEntity = new this.model(createDTO);
@@ -16,7 +18,7 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     let searchPattern = searchNameTerm ? { name: searchNameTerm } : {};
     return await this.model.find(searchPattern).skip(skip).limit(limit) as EntityDocument[];
   }
-  async update(document: EntityDocument){
+  async update(document: EntityDocument) {
     return (await document.save());
   }
 
@@ -29,5 +31,10 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     let deletedDocument = await this.model.findByIdAndDelete(id) as EntityDocument;
 
     return deletedDocument || null;
+  }
+
+  async DeleteAll(){
+    let del = await this.model.deleteMany();
+    return del.acknowledged;
   }
 }
