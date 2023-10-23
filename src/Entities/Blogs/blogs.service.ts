@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { BlogsRepoService } from '../Repos/BlogsRepo/blogsRepo.service';
-import { CreateBlogDto } from '../Repos/BlogsRepo/Dtos/CreateBlogDto';
-import { UpdateBlogDto } from '../Repos/BlogsRepo/Dtos/UpdateBlogDto';
-import { Blog } from '../Repos/BlogsRepo/Schemas/blog.schema';
-import { ServiceExecutionResult } from '../../Common/Services/ServiseExecutionResult';
-import { ServiceExecutionResultStatus } from '../../Common/Services/ServiceExecutionStatus';
-import { ServiceBlogDto } from './Entities/blogs.serviceDto';
+import { BlogsRepoService } from './BlogsRepo/blogsRepo.service';
+import { CreateBlogDto } from './BlogsRepo/Dtos/CreateBlogDto';
+import { UpdateBlogDto } from './BlogsRepo/Dtos/UpdateBlogDto';
+import { Blog } from './BlogsRepo/Schemas/blog.schema';
+import { ServiceExecutionResult } from '../../Common/Services/Types/ServiseExecutionResult';
+import { ServiceExecutionResultStatus } from '../../Common/Services/Types/ServiceExecutionStatus';
+import { ServiceDto } from './Entities/blogs.serviceDto';
+import { CrudService } from '../../Common/Services/crud.service';
 
 @Injectable()
-export class BlogService {
+export class BlogService extends CrudService<>{
   constructor(private blogsRepo: BlogsRepoService) { }
 
-  public async Save(blog: CreateBlogDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceBlogDto>> {
+  public async Save(blog: CreateBlogDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto>> {
     let savedBlog = await this.blogsRepo.save(blog);
 
     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, savedBlog.toObject())
@@ -24,13 +25,13 @@ export class BlogService {
   }
 
 
-  public async Find(searchNameTerm?: string, skip?: number, limit?: number): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceBlogDto[]>> {
-    let blogs = (await this.blogsRepo.find(searchNameTerm, skip, limit)).map(blog => blog.toObject()) as ServiceBlogDto[];
+  public async Find(searchNameTerm?: string, skip?: number, limit?: number): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto[]>> {
+    let blogs = (await this.blogsRepo.find(searchNameTerm, skip, limit)).map(blog => blog.toObject()) as ServiceDto[];
 
     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, blogs)
   }
 
-  public async FindById(id: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceBlogDto>> {
+  public async FindById(id: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto>> {
     let blog = await this.blogsRepo.findById(id);
     if (blog)
       return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, blog.toObject())
@@ -38,7 +39,7 @@ export class BlogService {
     return new ServiceExecutionResult(ServiceExecutionResultStatus.NotFound)
   }
 
-  public async Update(id: string, newBlogData: UpdateBlogDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceBlogDto>> {
+  public async Update(id: string, newBlogData: UpdateBlogDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto>> {
     let blog = await this.blogsRepo.findById(id);
 
     if (!blog)
@@ -50,7 +51,7 @@ export class BlogService {
     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, savedBlog.toObject())
   }
 
-  public async Delete(id: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceBlogDto>> {
+  public async Delete(id: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto>> {
     let deleteBlog = await this.blogsRepo.deleteById(id)
 
     if (deleteBlog)

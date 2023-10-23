@@ -1,5 +1,4 @@
 import mongoose, { Connection, HydratedDocument, Model } from "mongoose";
-import { MONGO_URL } from "../../settings";
 
 export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedDocument<ModelType>>{
   constructor(private model: Model<ModelType>) { }
@@ -22,8 +21,11 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     return (await document.save());
   }
 
-  async count(searchNameTerm?: string) {
-    let searchPattern = searchNameTerm ? { name: searchNameTerm } : {};
+  async count(key: keyof (ModelType), value?: string) {
+    let searchPattern: any = {};
+    if (value)
+      searchPattern.key = value;
+
     return await this.model.count(searchPattern);
   }
 
@@ -33,7 +35,7 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     return deletedDocument || null;
   }
 
-  async DeleteAll(){
+  async DeleteAll() {
     let del = await this.model.deleteMany();
     return del.acknowledged;
   }

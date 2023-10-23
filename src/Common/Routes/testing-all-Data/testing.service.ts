@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { MongooseRepo } from "../../../Entities/Repos/MongooseRepo";
-import { BlogsRepoService } from "../../../Entities/Repos/BlogsRepo/blogsRepo.service";
+import { BlogsRepoService } from "../../../Entities/Blogs/BlogsRepo/blogsRepo.service";
 
 @Injectable()
 export class TestService{

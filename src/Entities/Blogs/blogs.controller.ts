@@ -1,8 +1,8 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put } from '@nestjs/common';
-import { CreateBlogDto } from '../Repos/BlogsRepo/Dtos/CreateBlogDto';
+import { CreateBlogDto } from './BlogsRepo/Dtos/CreateBlogDto';
 import { BlogService } from './blogs.service';
-import { UpdateBlogDto } from '../Repos/BlogsRepo/Dtos/UpdateBlogDto';
-import { ServiceExecutionResultStatus } from '../../Common/Services/ServiceExecutionStatus';
+import { UpdateBlogDto } from './BlogsRepo/Dtos/UpdateBlogDto';
+import { ServiceExecutionResultStatus } from '../../Common/Services/Types/ServiceExecutionStatus';
 import { ControllerBlogDto } from './Entities/blogs.controllerDto';
 
 

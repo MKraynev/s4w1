@@ -1,4 +1,4 @@
-import { ServiceBlogDto } from "./blogs.serviceDto";
+import { ServiceDto } from "./blogs.serviceDto";
 
 export class ControllerBlogDto {
     public id: string;
@@ -7,7 +7,7 @@ export class ControllerBlogDto {
     public websiteUrl: string;
     public createdAt: Date;
     public isMembership: boolean;
-    constructor(serviceBLog: ServiceBlogDto) {
+    constructor(serviceBLog: ServiceDto) {
         this.id = serviceBLog.id;
         this.name = serviceBLog.name;
         this.description = serviceBLog.description;

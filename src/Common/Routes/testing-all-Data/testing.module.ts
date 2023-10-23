@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TestController } from './testing.controller';
 import { TestService } from './testing.service';
-import { BlogsRepoModule } from '../../../Entities/Repos/BlogsRepo/blogsRepo.module';
+import { BlogsRepoModule } from '../../../Entities/Blogs/BlogsRepo/blogsRepo.module';
 
 
 @Module({
