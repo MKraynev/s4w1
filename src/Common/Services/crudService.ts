@@ -2,15 +2,14 @@ import { HydratedDocument } from "mongoose";
 import { MongooseRepo } from "../../Entities/Repos/MongooseRepo";
 import { ServiceExecutionResult } from "./Types/ServiseExecutionResult";
 import { ServiceExecutionResultStatus } from "./Types/ServiceExecutionStatus";
-import { ServiceDto } from "../../Entities/Blogs/Entities/blogs.serviceDto";
+import { ServiceDto } from "./Types/ServiceDto";
 
 export class CrudService<
     CreateAndUpdateEntityDto,
     EntityType extends CreateAndUpdateEntityDto,
     EntityDocument extends HydratedDocument<EntityType>,
-    Repo extends MongooseRepo<EntityType, CreateAndUpdateEntityDto, EntityDocument>
-> {
-
+    Repo extends MongooseRepo<EntityType, CreateAndUpdateEntityDto, EntityDocument>>
+{
     constructor(private repo: Repo) { }
 
     public async Save(entity: CreateAndUpdateEntityDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>>> {
@@ -24,7 +23,6 @@ export class CrudService<
 
         return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, countRes)
     }
-
 
     public async Find(searchNameTerm?: string, skip?: number, limit?: number): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>[]>> {
         let blogs = (await this.repo.find(searchNameTerm, skip, limit)).map(blog => blog.toObject()) as ServiceDto<EntityType>[];

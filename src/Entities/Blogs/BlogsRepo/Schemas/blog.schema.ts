@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { CreateBlogDto } from '../Dtos/CreateBlogDto';
 
 export type BlogDocument = HydratedDocument<Blog>;
 
@@ -7,13 +8,13 @@ export type BlogDocument = HydratedDocument<Blog>;
   timestamps: true,
   toObject: {
     transform(doc, ret) {
-    ret.id = ret._id;
-    delete ret._id;
-    delete ret.__v;
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
     }
   }
 })
-export class Blog {
+export class Blog extends CreateBlogDto {
   @Prop({ required: true })
   name: string;
 

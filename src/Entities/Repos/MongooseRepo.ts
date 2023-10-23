@@ -1,4 +1,4 @@
-import mongoose, { Connection, HydratedDocument, Model } from "mongoose";
+import { HydratedDocument, Model } from "mongoose";
 
 export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedDocument<ModelType>>{
   constructor(private model: Model<ModelType>) { }

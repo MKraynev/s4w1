@@ -1,4 +1,5 @@
-import { ServiceDto } from "./blogs.serviceDto";
+import { Blog } from "../BlogsRepo/Schemas/blog.schema";
+import { ServiceDto } from "../../../Common/Services/Types/ServiceDto";
 
 export class ControllerBlogDto {
     public id: string;
@@ -7,7 +8,7 @@ export class ControllerBlogDto {
     public websiteUrl: string;
     public createdAt: Date;
     public isMembership: boolean;
-    constructor(serviceBLog: ServiceDto) {
+    constructor(serviceBLog: ServiceDto<Blog>) {
         this.id = serviceBLog.id;
         this.name = serviceBLog.name;
         this.description = serviceBLog.description;
