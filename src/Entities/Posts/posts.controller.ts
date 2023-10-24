@@ -9,7 +9,7 @@ export class PostController {
 
     @Get()
     async GetPosts() {
-        let findPost = await this.postService.Find();
+        let findPost = await this.postService.Take();
 
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
@@ -24,7 +24,7 @@ export class PostController {
     //get -> /hometask_13/api/posts/{id}
     @Get(":id")
     async GetPostById(@Param('id') id: string) {
-        let findPost = await this.postService.FindById(id);
+        let findPost = await this.postService.TakeById(id);
 
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:

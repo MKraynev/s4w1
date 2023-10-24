@@ -12,28 +12,25 @@ export class CrudService<
 {
     constructor(private repo: Repo) { }
 
-    public async Save(entity: CreateAndUpdateEntityDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>>> {
-        let savedEntity = await this.repo.Save(entity);
 
-        return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, savedEntity.toObject())
+    public async Take(searchBy?: keyof (EntityType), searchValue?: string, skip: number = 0, limit: number = 10) {
+        let count = await this.repo.Count(searchBy, searchValue);
+        skip = count > skip? skip: 0;
+
+        let items = await this.repo.Find(searchBy, searchValue, skip, limit);
+        let formatedItems = items.map(item => item.toObject()) as ServiceDto<EntityType>[]; 
+
+        let result = {
+            count: count,
+            items: formatedItems
+        }
+        return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, result)
     }
 
-    public async Count(key: keyof (EntityType), value: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, number>> {
-        let countRes = await this.repo.Count(key, value);
-
-        return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, countRes)
-    }
-
-    public async Find(property?: keyof(EntityType), propertyValue?: string, skip?: number, limit?: number): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>[]>> {
-        let blogs = (await this.repo.Find(property, propertyValue, skip, limit)).map(blog => blog.toObject()) as ServiceDto<EntityType>[];
-
-        return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, blogs)
-    }
-
-    public async FindById(id: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>>> {
-        let blog = await this.repo.FindById(id);
-        if (blog)
-            return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, blog.toObject())
+    public async TakeById(id: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>>> {
+        let item = await this.repo.FindById(id);
+        if (item)
+            return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, item.toObject())
 
         return new ServiceExecutionResult(ServiceExecutionResultStatus.NotFound)
     }
@@ -58,4 +55,22 @@ export class CrudService<
 
         return new ServiceExecutionResult(ServiceExecutionResultStatus.NotFound);
     }
+
+    public async Save(entity: CreateAndUpdateEntityDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>>> {
+        let savedEntity = await this.repo.Save(entity);
+
+        return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, savedEntity.toObject())
+    }
+
+    // private async Count(key: keyof (EntityType), value: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, number>> {
+    //     let countRes = await this.repo.Count(key, value);
+
+    //     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, countRes)
+    // }
+
+    // private async Find(property?: keyof (EntityType), propertyValue?: string, skip?: number, limit?: number): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>[]>> {
+    //     let objects = (await this.repo.Find(property, propertyValue, skip, limit)).map(entityObj => entityObj.toObject()) as ServiceDto<EntityType>[];
+
+    //     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, objects)
+    // }
 }

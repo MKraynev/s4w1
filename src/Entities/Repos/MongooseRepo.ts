@@ -14,22 +14,19 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
   }
 
   async Find(property?: keyof (ModelType), propertyValue?: string, skip: number = 0, limit: number = 10): Promise<EntityDocument[]> {
-    let searchPattern: any = {};
-    if (property && propertyValue)
-      searchPattern[property] = propertyValue;
+    let searchPattern = this.GetSearchPattern(property, propertyValue);
 
     return await this.model.find(searchPattern).skip(skip).limit(limit) as EntityDocument[];
   }
-  async Update(document: EntityDocument) {
-    return (await document.save());
-  }
 
-  async Count(key: keyof (ModelType), value?: string) {
-    let searchPattern: any = {};
-    if (value)
-      searchPattern.key = value;
+  async Count(key?: keyof (ModelType), value?: string) {
+    let searchPattern = this.GetSearchPattern(key, value);
 
     return await this.model.count(searchPattern);
+  }
+
+  async Update(document: EntityDocument) {
+    return (await document.save());
   }
 
   async DeleteById(id: string): Promise<EntityDocument> | null {
@@ -41,5 +38,13 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
   async DeleteAll() {
     let del = await this.model.deleteMany();
     return del.acknowledged;
+  }
+
+  private GetSearchPattern(key?: keyof (ModelType), value?: string) {
+    let searchPattern: any = {};
+    if (key && value)
+      searchPattern[key] = value;
+
+    return searchPattern;
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateBlogDto } from './BlogsRepo/Dtos/CreateBlogDto';
 import { BlogService } from './blogs.service';
 import { UpdateBlogDto } from './BlogsRepo/Dtos/UpdateBlogDto';
@@ -6,6 +6,9 @@ import { ServiceExecutionResultStatus } from '../../Common/Services/Types/Servic
 import { ControllerBlogDto } from './Entities/blogs.controllerDto';
 import { PostService } from '../Posts/posts.service';
 import { CreatePostDto } from '../Posts/PostsRepo/Dtos/CreatePostDto';
+import { Blog } from './BlogsRepo/Schemas/blog.schema';
+import { InputPaginator, OutputPaginator } from '../../Common/Paginator/Paginator';
+import { QueryPaginator } from '../../Common/Routes/QueryParams/PaginatorQueryParams';
 
 
 
@@ -14,15 +17,28 @@ export class BlogController {
   constructor(private blogService: BlogService, private postService: PostService) { }
 
   //get -> hometask_13/api/blogs
+  //TODO можно ли вынести QUERY в одит объект
   @Get()
-  async getBlog() {
-    let findBlogs = await this.blogService.Find();
+  async getBlog(
+    @Query('searchNameTerm') nameTerm: string | undefined,
+    @Query('sortBy') sortBy: keyof (Blog) = "createdAt",
+    @QueryPaginator() paginator: InputPaginator
+  ) {
+    let searchPropName: keyof (Blog) | undefined = nameTerm ? "name" : undefined;
 
-    switch (findBlogs.executionStatus) {
+    let findAndCountBlogs = await this.blogService.Take(
+      searchPropName,
+      nameTerm,
+      paginator.skipElements,
+      paginator.pageSize);
+
+    switch (findAndCountBlogs.executionStatus) {
       case ServiceExecutionResultStatus.Success:
         //TODO можно ли объявить единый фильтр для Controller?
-        let blogs = findBlogs.executionResultObject.map(serviceBlog => new ControllerBlogDto(serviceBlog));
-        return blogs;
+        let blogs = findAndCountBlogs.executionResultObject.items.map(serviceBlog => new ControllerBlogDto(serviceBlog));
+        let count = findAndCountBlogs.executionResultObject.count;
+        let pagedBlogs = new OutputPaginator(count, blogs, paginator);
+        return pagedBlogs;
         break;
 
       default:
@@ -51,7 +67,7 @@ export class BlogController {
   //get -> hometask_13/api/blogs/{blogId}/posts
   @Get(':id/posts')
   async GetBlogsPosts(@Param('id') id: string) {
-    let findPosts = await this.postService.Find("blogId", id);
+    let findPosts = await this.postService.Take("blogId", id);
 
     switch (findPosts.executionStatus) {
       case ServiceExecutionResultStatus.Success:
@@ -86,7 +102,7 @@ export class BlogController {
   //get -> hometask_13/api/blogs/{id}
   @Get(":id")
   async GetBlogById(@Param('id') id: string) {
-    let findBlog = await this.blogService.FindById(id);
+    let findBlog = await this.blogService.TakeById(id);
     switch (findBlog.executionStatus) {
       case ServiceExecutionResultStatus.Success:
         let blog = new ControllerBlogDto(findBlog.executionResultObject);
@@ -135,5 +151,5 @@ export class BlogController {
       case ServiceExecutionResultStatus.NotFound:
         throw new NotFoundException();
     }
-  }  
+  }
 }
