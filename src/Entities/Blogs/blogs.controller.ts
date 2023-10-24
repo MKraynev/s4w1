@@ -13,7 +13,6 @@ export class BlogController {
   //выполняющий router функции
   constructor(private blogService: BlogService) { }
 
-  Blogs
   @Get()
   async getBlog() {
     let findBlogs = await this.blogService.Find();
@@ -29,8 +28,6 @@ export class BlogController {
         throw new NotFoundException();
         break;
     }
-
-
   }
 
   @Post()

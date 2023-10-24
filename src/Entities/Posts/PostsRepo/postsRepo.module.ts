@@ -8,4 +8,4 @@ import { PostsRepoService } from './postsRepo.service';
   providers: [PostsRepoService],
   exports: [PostsRepoService]
 })
-export class BlogsRepoModule {}
+export class PostsRepoModule { }

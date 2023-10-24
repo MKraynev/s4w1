@@ -7,9 +7,9 @@ export type PostDocument = HydratedDocument<Post>;
   timestamps: true,
   toObject: {
     transform(doc, ret) {
-    ret.id = ret._id;
-    delete ret._id;
-    delete ret.__v;
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
     }
   }
 })
@@ -23,10 +23,10 @@ export class Post {
   @Prop({ required: true })
   content: string;
 
-  @Prop({ required:true })
+  @Prop({ required: true })
   blogId: string;
 
-  @Prop({ required:true })
+  @Prop({ default: "default blog name" })
   blogName: string;
 
   @Prop({ default: Date.now() })

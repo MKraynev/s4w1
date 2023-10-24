@@ -5,10 +5,3 @@ export class CreatePostDto {
         public content: string,
         public blogId: string) { }
 }
-
-
-
-// "title": "string",
-//   "shortDescription": "string",
-//   "content": "string",
-//   "blogId": "string"
