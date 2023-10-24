@@ -4,15 +4,16 @@ import { BlogService } from './blogs.service';
 import { UpdateBlogDto } from './BlogsRepo/Dtos/UpdateBlogDto';
 import { ServiceExecutionResultStatus } from '../../Common/Services/Types/ServiceExecutionStatus';
 import { ControllerBlogDto } from './Entities/blogs.controllerDto';
+import { PostService } from '../Posts/posts.service';
+import { CreatePostDto } from '../Posts/PostsRepo/Dtos/CreatePostDto';
 
 
 
 @Controller("blogs")
 export class BlogController {
-  //1ый слой
-  //выполняющий router функции
-  constructor(private blogService: BlogService) { }
+  constructor(private blogService: BlogService, private postService: PostService) { }
 
+  //get -> hometask_13/api/blogs
   @Get()
   async getBlog() {
     let findBlogs = await this.blogService.Find();
@@ -30,6 +31,7 @@ export class BlogController {
     }
   }
 
+  //post -> hometask_13/api/blogs
   @Post()
   async saveBlog(@Body() blog: CreateBlogDto) {
     let savedBlog = await this.blogService.Save(blog);
@@ -46,6 +48,42 @@ export class BlogController {
     }
   }
 
+  //get -> hometask_13/api/blogs/{blogId}/posts
+  @Get(':id/posts')
+  async GetBlogsPosts(@Param('id') id: string) {
+    let findPosts = await this.postService.Find("blogId", id);
+
+    switch (findPosts.executionStatus) {
+      case ServiceExecutionResultStatus.Success:
+        return findPosts.executionResultObject;
+        break;
+
+      default:
+      case ServiceExecutionResultStatus.NotFound:
+        throw new NotFoundException();
+        break;
+    }
+  }
+
+  //post -> hometask_13/api/blogs/{blogId}/posts
+  @Post(':id/posts')
+  @HttpCode(HttpStatus.CREATED)
+  async SaveBlogsPosts(@Param('id') id: string, @Body() postData: CreatePostDto) {
+    let createPost = await this.postService.Create(id, postData);
+
+    switch (createPost.executionStatus) {
+      case ServiceExecutionResultStatus.Success:
+        return;
+        break;
+
+      default:
+      case ServiceExecutionResultStatus.NotFound:
+        throw new NotFoundException();
+        break;
+    }
+  }
+
+  //get -> hometask_13/api/blogs/{id}
   @Get(":id")
   async GetBlogById(@Param('id') id: string) {
     let findBlog = await this.blogService.FindById(id);
@@ -62,6 +100,7 @@ export class BlogController {
     }
   }
 
+  //put -> /hometask_13/api/blogs/{id}
   @Put(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
   async UpdateBlog(
@@ -81,6 +120,7 @@ export class BlogController {
     }
   }
 
+  //delete -> /hometask_13/api/blogs/{id}
   @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
   async DeleteBlog(@Param('id') id: string) {
@@ -95,5 +135,5 @@ export class BlogController {
       case ServiceExecutionResultStatus.NotFound:
         throw new NotFoundException();
     }
-  }
+  }  
 }

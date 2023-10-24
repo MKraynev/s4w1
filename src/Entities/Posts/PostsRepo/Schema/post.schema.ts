@@ -35,6 +35,13 @@ export class Post {
   @Prop()
   updatedAt: Date;
 
+  constructor(title: string, shortDescription: string, content: string, blogId: string, blogName : string) {
+    this.title = title;
+    this.shortDescription = shortDescription;
+    this.content = content;
+    this.blogId = blogId;
+    this.blogName = blogName;
+  }
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
