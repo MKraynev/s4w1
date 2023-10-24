@@ -16,7 +16,7 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
   async Find(property?: keyof (ModelType), propertyValue?: string, skip: number = 0, limit: number = 10): Promise<EntityDocument[]> {
     let searchPattern: any = {};
     if (property && propertyValue)
-      searchPattern.property = propertyValue;
+      searchPattern[property] = propertyValue;
 
     return await this.model.find(searchPattern).skip(skip).limit(limit) as EntityDocument[];
   }
