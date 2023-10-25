@@ -6,7 +6,7 @@ import { ServiceExecutionResultStatus } from '../../Common/Services/Types/Servic
 import { ControllerBlogDto } from './Entities/blogs.controllerDto';
 import { PostService } from '../Posts/posts.service';
 import { CreatePostDto } from '../Posts/PostsRepo/Dtos/CreatePostDto';
-import { BlogDto } from './BlogsRepo/Schemas/blog.schema';
+import { BlogDto } from './BlogsRepo/Schema/blog.schema';
 import { InputPaginator, OutputPaginator } from '../../Common/Paginator/Paginator';
 import { QueryPaginator } from '../../Common/Routes/QueryParams/PaginatorQueryParams';
 import {PostDto} from "../Posts/PostsRepo/Schema/post.schema"
@@ -102,7 +102,7 @@ export class BlogController {
 
     switch (createPost.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        return;
+        return createPost.executionResultObject;
         break;
 
       default:
