@@ -24,7 +24,13 @@ export class PostController {
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
                 let count = findPost.executionResultObject.count;
-                let posts = findPost.executionResultObject.items;
+                let posts = findPost.executionResultObject.items.map(post => {
+                    let buff: any = {
+                        extendedLikesInfo: LikeService.GetEmptyExtendedData()
+                    }
+                    let result = {...post, ...buff};
+                    return result;
+                });
                 let pagedPosts = new OutputPaginator(count, posts, paginator)
                 return pagedPosts;
                 break;
