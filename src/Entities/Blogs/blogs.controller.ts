@@ -106,7 +106,7 @@ export class BlogController {
 
     switch (createPost.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        let returnPost = createPost.executionResultObject;
+        let {updatedAt, ...returnPost} = createPost.executionResultObject;
         let likeEmtyData: any = LikeService.GetEmptyExtendedData();
         let buff: any = {
           extendedLikesInfo: likeEmtyData
