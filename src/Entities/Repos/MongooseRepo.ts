@@ -14,14 +14,15 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
   }
 
   async Find(sortBy: keyof (ModelType), sortDirection: "asc" | "desc", property?: keyof (ModelType), propertyValue?: string, skip: number = 0, limit: number = 10): Promise<EntityDocument[]> {
-    let searchPattern = this.GetPattern(property, propertyValue);
-    let sortPattern = this.GetPattern(sortBy, sortDirection);
+    let searchPattern = this.GetSearchPattern(property, propertyValue);
+    //"name": { $regex: sorter.searchNameTerm, $options: 'i' }
+    let sortPattern = this.GetSortPattern(sortBy, sortDirection);
 
     return await this.model.find(searchPattern).sort(sortPattern).skip(skip).limit(limit).exec() as EntityDocument[];
   }
 
   async Count(key?: keyof (ModelType), value?: string) {
-    let searchPattern = this.GetPattern(key, value);
+    let searchPattern = this.GetSortPattern(key, value);
 
     return await this.model.count(searchPattern);
   }
@@ -41,11 +42,18 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     return del.acknowledged;
   }
 
-  private GetPattern(key?: keyof (ModelType), value?: string) {
+  private GetSortPattern(key?: keyof (ModelType), value?: string) {
     let searchPattern: any = {};
     if (key && value)
       searchPattern[key] = value;
 
+    return searchPattern;
+  }
+  private GetSearchPattern(key?: keyof (ModelType), value?: string) {
+    //"name": { $regex: sorter.searchNameTerm, $options: 'i' }
+    let searchPattern: any = {};
+    if (key && value)
+      searchPattern[key] = { $regex: value, $options: 'i' };
     return searchPattern;
   }
 }
