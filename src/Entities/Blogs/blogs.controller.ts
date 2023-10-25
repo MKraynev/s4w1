@@ -81,7 +81,10 @@ export class BlogController {
 
     switch (findPosts.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        let posts = findPosts.executionResultObject.items;
+        let posts = findPosts.executionResultObject.items.map(post => { 
+          let {updatedAt, ...rest} = post;
+          return rest;
+        });
         let count = findPosts.executionResultObject.count;
         let pagedPosts = new OutputPaginator(count, posts, paginator);
 
