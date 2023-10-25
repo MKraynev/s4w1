@@ -41,7 +41,7 @@ export class PostController {
 
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
-                let returnPost = findPost.executionResultObject;
+                let {updatedAt, ...returnPost} = findPost.executionResultObject;;
                 let likeEmtyData = LikeService.GetEmptyExtendedData();
                 let buff: any = {
                     extendedLikesInfo: likeEmtyData
@@ -73,7 +73,7 @@ export class PostController {
                 //TODO Возвращаемая сущность содержит две инфы от постов и лайков
                 //Задавать логику лайков в посты нет желания
                 //Делать отдельный Join repo?
-                let returnPost = savePost.executionResultObject;
+                let {updatedAt, ...returnPost} = savePost.executionResultObject;
                 let likeEmtyData = LikeService.GetEmptyExtendedData();
                 let buff: any = {
                     extendedLikesInfo: likeEmtyData
@@ -99,7 +99,7 @@ export class PostController {
 
         switch (updatePost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
-                let returnPost = updatePost.executionResultObject;
+                let {updatedAt, ...returnPost} = updatePost.executionResultObject;
                 let likeEmtyData = LikeService.GetEmptyExtendedData();
                 let buff: any = {
                     extendedLikesInfo: likeEmtyData
