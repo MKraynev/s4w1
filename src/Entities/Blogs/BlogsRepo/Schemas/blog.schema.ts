@@ -27,10 +27,8 @@ export class BlogDto extends CreateBlogDto {
   @Prop({ default: false })
   isMembership: boolean;
 
-  @Prop({ default: Date.now() })
   createdAt: Date;
 
-  @Prop()
   updatedAt: Date;
 }
 

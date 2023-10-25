@@ -29,10 +29,8 @@ export class PostDto {
   @Prop({ default: "default blog name" })
   blogName: string;
 
-  @Prop({ default: Date.now() })
   createdAt: Date;
 
-  @Prop()
   updatedAt: Date;
 
   constructor(title: string, shortDescription: string, content: string, blogId: string, blogName : string) {

@@ -5,7 +5,7 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
 
 
   async Save(createDTO: CreateDTO | ModelType): Promise<EntityDocument> {
-    const createEntity = new this.model(createDTO);
+    const createEntity = await this.model.create(createDTO);
     return (await createEntity.save() as EntityDocument);
   }
 
@@ -17,7 +17,7 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     let searchPattern = this.GetPattern(property, propertyValue);
     let sortPattern = this.GetPattern(sortBy, sortDirection);
 
-    return await this.model.find(searchPattern).sort(sortPattern).skip(skip).limit(limit) as EntityDocument[];
+    return await this.model.find(searchPattern).sort(sortPattern).skip(skip).limit(limit).exec() as EntityDocument[];
   }
 
   async Count(key?: keyof (ModelType), value?: string) {
