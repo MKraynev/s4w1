@@ -41,7 +41,13 @@ export class PostController {
 
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
-                return findPost.executionResultObject;
+                let returnPost = findPost.executionResultObject;
+                let likeEmtyData = LikeService.GetEmptyExtendedData();
+                let buff: any = {
+                    extendedLikesInfo: likeEmtyData
+                  }
+                  let result = { ...returnPost, ...buff }
+                  return result;
                 break;
 
             default:
@@ -69,8 +75,11 @@ export class PostController {
                 //Делать отдельный Join repo?
                 let returnPost = savePost.executionResultObject;
                 let likeEmtyData = LikeService.GetEmptyExtendedData();
-                let result = {...returnPost, likeEmtyData}
-                return result;
+                let buff: any = {
+                    extendedLikesInfo: likeEmtyData
+                  }
+                  let result = { ...returnPost, ...buff }
+                  return result;
                 break;
 
             default:
@@ -92,8 +101,11 @@ export class PostController {
             case ServiceExecutionResultStatus.Success:
                 let returnPost = updatePost.executionResultObject;
                 let likeEmtyData = LikeService.GetEmptyExtendedData();
-                let result = {...returnPost, likeEmtyData}
-                return result;
+                let buff: any = {
+                    extendedLikesInfo: likeEmtyData
+                  }
+                  let result = { ...returnPost, ...buff }
+                  return result;
                 break;
 
             default:
