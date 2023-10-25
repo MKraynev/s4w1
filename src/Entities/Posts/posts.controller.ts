@@ -28,7 +28,8 @@ export class PostController {
                     let buff: any = {
                         extendedLikesInfo: LikeService.GetEmptyExtendedData()
                     }
-                    let result = {...post, ...buff};
+                    let {updatedAt, ...rest} = post;
+                    let result = {...rest, ...buff};
                     return result;
                 });
                 let pagedPosts = new OutputPaginator(count, posts, paginator)

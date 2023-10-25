@@ -83,8 +83,14 @@ export class BlogController {
       case ServiceExecutionResultStatus.Success:
         let posts = findPosts.executionResultObject.items.map(post => { 
           let {updatedAt, ...rest} = post;
-          return rest;
+          let likeBuff:any ={
+            extendedLikesInfo: LikeService.GetEmptyExtendedData()
+          }
+          let result = {...rest, ...likeBuff}
+          return result;
         });
+        
+
         let count = findPosts.executionResultObject.count;
         let pagedPosts = new OutputPaginator(count, posts, paginator);
 
