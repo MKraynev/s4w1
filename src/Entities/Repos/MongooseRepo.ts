@@ -22,7 +22,7 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
   }
 
   async Count(key?: keyof (ModelType), value?: string) {
-    let searchPattern = this.GetSortPattern(key, value);
+    let searchPattern = this.GetSearchPattern(key, value);
 
     return await this.model.count(searchPattern);
   }
