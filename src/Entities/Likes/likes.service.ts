@@ -1,11 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { LikesRepoService } from "./LikesRepo/likesRepo.service";
+import { ExtendedLikeInfo } from "./Entities/ExtendedLikeInfo";
 
 @Injectable()
 export class LikeService{
     constructor(private likesRepo: LikesRepoService) {}
 
-    
+    public static GetEmptyExtendedData(){
+        return new ExtendedLikeInfo();
+    }
 }
 
 //     public async SetLikeData(token: Token, likeData: LikeRequest): Promise<ExecutionResultContainer<ServicesWithUsersExecutionResult, LikeResponse | null>> {

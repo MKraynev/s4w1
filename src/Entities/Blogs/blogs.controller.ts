@@ -9,12 +9,13 @@ import { CreatePostDto } from '../Posts/PostsRepo/Dtos/CreatePostDto';
 import { BlogDto } from './BlogsRepo/Schema/blog.schema';
 import { InputPaginator, OutputPaginator } from '../../Common/Paginator/Paginator';
 import { QueryPaginator } from '../../Common/Routes/QueryParams/PaginatorQueryParams';
-import {PostDto} from "../Posts/PostsRepo/Schema/post.schema"
+import { PostDto } from "../Posts/PostsRepo/Schema/post.schema"
+import { LikeService } from '../Likes/likes.service';
 
 
 @Controller("blogs")
 export class BlogController {
-  constructor(private blogService: BlogService, private postService: PostService) { }
+  constructor(private blogService: BlogService, private postService: PostService, private likeService: LikeService) { }
 
   //get -> hometask_13/api/blogs
   //TODO можно ли вынести QUERY в одит объект
@@ -102,7 +103,10 @@ export class BlogController {
 
     switch (createPost.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        return createPost.executionResultObject;
+        let returnPost = createPost.executionResultObject;
+        let likeEmtyData = LikeService.GetEmptyExtendedData();
+        let result = { ...returnPost, likeEmtyData }
+        return result;
         break;
 
       default:

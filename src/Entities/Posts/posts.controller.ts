@@ -5,6 +5,8 @@ import { CreatePostDto } from "./PostsRepo/Dtos/CreatePostDto";
 import { QueryPaginator } from "../../Common/Routes/QueryParams/PaginatorQueryParams";
 import { PostDto } from "./PostsRepo/Schema/post.schema";
 import { InputPaginator, OutputPaginator } from "../../Common/Paginator/Paginator";
+import { ExtendedLikeInfo } from "../Likes/Entities/ExtendedLikeInfo";
+import { LikeService } from "../Likes/likes.service";
 
 @Controller("posts")
 export class PostController {
@@ -62,7 +64,13 @@ export class PostController {
 
         switch (savePost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
-                return savePost.executionResultObject;
+                //TODO Возвращаемая сущность содержит две инфы от постов и лайков
+                //Задавать логику лайков в посты нет желания
+                //Делать отдельный Join repo?
+                let returnPost = savePost.executionResultObject;
+                let likeEmtyData = LikeService.GetEmptyExtendedData();
+                let result = {...returnPost, likeEmtyData}
+                return result;
                 break;
 
             default:
@@ -82,7 +90,10 @@ export class PostController {
 
         switch (updatePost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
-                return;
+                let returnPost = updatePost.executionResultObject;
+                let likeEmtyData = LikeService.GetEmptyExtendedData();
+                let result = {...returnPost, likeEmtyData}
+                return result;
                 break;
 
             default:

@@ -7,10 +7,11 @@ import { ServiceExecutionResultStatus } from "../../Common/Services/Types/Servic
 import { ServiceExecutionResult } from "../../Common/Services/Types/ServiseExecutionResult";
 import { ServiceDto } from "../../Common/Services/Types/ServiceDto";
 import { BlogsRepoService } from "../Blogs/BlogsRepo/blogsRepo.service";
+import { LikeService } from "../Likes/likes.service";
 
 @Injectable()
 export class PostService extends CrudService<CreatePostDto, PostDto, PostDocument, PostsRepoService>{
-    constructor(private postRepo: PostsRepoService, private blogsRepo: BlogsRepoService) {
+    constructor(private postRepo: PostsRepoService, private blogsRepo: BlogsRepoService, private likeService: LikeService) {
         super(postRepo)
     }
 
@@ -22,7 +23,7 @@ export class PostService extends CrudService<CreatePostDto, PostDto, PostDocumen
 
         let post = new PostDto(postData.title, postData.shortDescription, postData.content, blogId, blog.name);
         let savePost = await this.postRepo.Save(post);
-
+        
         return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, savePost.toObject());
     }
 }

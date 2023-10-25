@@ -4,6 +4,7 @@ import { LikeService } from "./likes.service";
 
 @Module({
     imports: [LikesRepoModule],
-    providers: [LikeService]
+    providers: [LikeService],
+    exports: [LikeService]
 })
 export class LikesModule{}
