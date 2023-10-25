@@ -77,7 +77,7 @@ export class BlogController {
     @Query('sortDirection') sortDirecrion: "desc" | "asc" = "desc",
     @QueryPaginator() paginator: InputPaginator
   ) {
-    let findPosts = await this.postService.Take(sortBy, sortDirecrion, "blogId", id);
+    let findPosts = await this.postService.TakeByBlogId(id, sortBy, sortDirecrion, paginator.skipElements, paginator.pageSize);
 
     switch (findPosts.executionStatus) {
       case ServiceExecutionResultStatus.Success:
@@ -99,11 +99,11 @@ export class BlogController {
   @Post(':id/posts')
   @HttpCode(HttpStatus.CREATED)
   async SaveBlogsPosts(@Param('id') id: string, @Body() postData: CreatePostDto) {
-    let createPost = await this.postService.Create(id, postData);
+    let createPost = await this.postService.CreateByBlogId(id, postData);
 
     switch (createPost.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        let {updatedAt, ...returnPost} = createPost.executionResultObject;
+        let returnPost = createPost.executionResultObject;
         let likeEmtyData: any = LikeService.GetEmptyExtendedData();
         let buff: any = {
           extendedLikesInfo: likeEmtyData

@@ -4,6 +4,11 @@ import { ServiceExecutionResult } from "./Types/ServiseExecutionResult";
 import { ServiceExecutionResultStatus } from "./Types/ServiceExecutionStatus";
 import { ServiceDto } from "./Types/ServiceDto";
 
+export type TakeResult<T> = {
+    count:  number,
+    items: Array<T>
+}
+
 export class CrudService<
     CreateAndUpdateEntityDto,
     EntityType extends CreateAndUpdateEntityDto,
@@ -12,8 +17,10 @@ export class CrudService<
 {
     constructor(private repo: Repo) { }
 
+   
 
-    public async Take(sortBy: keyof (EntityType), sortDirection: "asc" | "desc", searchBy?: keyof (EntityType), searchValue?: string, skip: number = 0, limit: number = 10,) {
+    public async Take(sortBy: keyof (EntityType), sortDirection: "asc" | "desc", searchBy?: keyof (EntityType), searchValue?: string, skip: number = 0, limit: number = 10)
+    :Promise <ServiceExecutionResult<ServiceExecutionResultStatus, TakeResult<ServiceDto<EntityType>>>>{
 
         let count = await this.repo.Count(searchBy, searchValue);
         skip = count > skip ? skip : 0;
@@ -64,11 +71,11 @@ export class CrudService<
         return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, savedEntity.toObject())
     }
 
-    // private async Count(key: keyof (EntityType), value: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, number>> {
-    //     let countRes = await this.repo.Count(key, value);
+    protected async Count(key: keyof (EntityType), value: string): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, number>> {
+        let countRes = await this.repo.Count(key, value);
 
-    //     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, countRes)
-    // }
+        return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, countRes)
+    }
 
     // private async Find(property?: keyof (EntityType), propertyValue?: string, skip?: number, limit?: number): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>[]>> {
     //     let objects = (await this.repo.Find(property, propertyValue, skip, limit)).map(entityObj => entityObj.toObject()) as ServiceDto<EntityType>[];

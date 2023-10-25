@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PostsRepoService } from "./PostsRepo/postsRepo.service";
-import { CrudService } from "../../Common/Services/crudService";
+import { CrudService, TakeResult } from "../../Common/Services/crudService";
 import { CreatePostDto } from "./PostsRepo/Dtos/CreatePostDto";
 import { PostDto, PostDocument } from "./PostsRepo/Schema/post.schema";
 import { ServiceExecutionResultStatus } from "../../Common/Services/Types/ServiceExecutionStatus";
@@ -15,7 +15,7 @@ export class PostService extends CrudService<CreatePostDto, PostDto, PostDocumen
         super(postRepo)
     }
 
-    async Create(blogId: string, postData: CreatePostDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<PostDto>>>{
+    async CreateByBlogId(blogId: string, postData: CreatePostDto): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<PostDto>>>{
         let blog = await this.blogsRepo.FindById(blogId);
 
         if(!blog)
@@ -25,5 +25,15 @@ export class PostService extends CrudService<CreatePostDto, PostDto, PostDocumen
         let savePost = await this.postRepo.Save(post);
         
         return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, savePost.toObject());
+    }
+
+    async TakeByBlogId(blogId: string, sortBy: keyof (PostDto), sortDirection: "asc" | "desc", skip: number = 0, limit: number = 10)
+    : Promise <ServiceExecutionResult<ServiceExecutionResultStatus, TakeResult<ServiceDto<PostDto>>>>{
+        let blog = await this.blogsRepo.FindById(blogId);
+
+        if(!blog)
+            return new ServiceExecutionResult(ServiceExecutionResultStatus.NotFound);
+
+        return this.Take(sortBy, sortDirection, "blogId", blogId, skip, limit);
     }
 }
