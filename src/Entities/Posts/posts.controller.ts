@@ -1,19 +1,30 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put, Query } from "@nestjs/common";
 import { PostService } from "./posts.service";
 import { ServiceExecutionResultStatus } from "../../Common/Services/Types/ServiceExecutionStatus";
 import { CreatePostDto } from "./PostsRepo/Dtos/CreatePostDto";
+import { QueryPaginator } from "../../Common/Routes/QueryParams/PaginatorQueryParams";
+import { PostDto } from "./PostsRepo/Schema/post.schema";
+import { InputPaginator, OutputPaginator } from "../../Common/Paginator/Paginator";
 
 @Controller("posts")
 export class PostController {
     constructor(private postService: PostService) { }
 
     @Get()
-    async GetPosts() {
-        let findPost = await this.postService.Take();
+    async GetPosts(
+        @Query('sortBy') sortBy: keyof (PostDto) = "createdAt",
+        @Query('sortDirection') sortDirecrion: "desc" | "asc" = "desc",
+        @QueryPaginator() paginator: InputPaginator
+
+    ) {
+        let findPost = await this.postService.Take(sortBy, sortDirecrion, undefined, undefined, paginator.skipElements, paginator.pageSize);
 
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
-                return findPost.executionResultObject;
+                let count = findPost.executionResultObject.count;
+                let posts = findPost.executionResultObject.items;
+                let pagedPosts = new OutputPaginator(count, posts, paginator)
+                return pagedPosts;
                 break;
 
             default:

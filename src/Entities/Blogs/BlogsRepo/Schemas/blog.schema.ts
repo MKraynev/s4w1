@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { CreateBlogDto } from '../Dtos/CreateBlogDto';
 
-export type BlogDocument = HydratedDocument<Blog>;
+export type BlogDocument = HydratedDocument<BlogDto>;
 
 @Schema({
   timestamps: true,
@@ -14,7 +14,7 @@ export type BlogDocument = HydratedDocument<Blog>;
     }
   }
 })
-export class Blog extends CreateBlogDto {
+export class BlogDto extends CreateBlogDto {
   @Prop({ required: true })
   name: string;
 
@@ -34,4 +34,4 @@ export class Blog extends CreateBlogDto {
   updatedAt: Date;
 }
 
-export const BlogSchema = SchemaFactory.createForClass(Blog);
+export const BlogSchema = SchemaFactory.createForClass(BlogDto);

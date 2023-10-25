@@ -6,10 +6,10 @@ import { ServiceExecutionResultStatus } from '../../Common/Services/Types/Servic
 import { ControllerBlogDto } from './Entities/blogs.controllerDto';
 import { PostService } from '../Posts/posts.service';
 import { CreatePostDto } from '../Posts/PostsRepo/Dtos/CreatePostDto';
-import { Blog } from './BlogsRepo/Schemas/blog.schema';
+import { BlogDto } from './BlogsRepo/Schemas/blog.schema';
 import { InputPaginator, OutputPaginator } from '../../Common/Paginator/Paginator';
 import { QueryPaginator } from '../../Common/Routes/QueryParams/PaginatorQueryParams';
-
+import {PostDto} from "../Posts/PostsRepo/Schema/post.schema"
 
 
 @Controller("blogs")
@@ -21,12 +21,15 @@ export class BlogController {
   @Get()
   async getBlog(
     @Query('searchNameTerm') nameTerm: string | undefined,
-    @Query('sortBy') sortBy: keyof (Blog) = "createdAt",
+    @Query('sortBy') sortBy: keyof (BlogDto) = "createdAt",
+    @Query('sortDirection') sortDirecrion: "desc" | "asc" = "desc",
     @QueryPaginator() paginator: InputPaginator
   ) {
-    let searchPropName: keyof (Blog) | undefined = nameTerm ? "name" : undefined;
+    let searchPropName: keyof (BlogDto) | undefined = nameTerm ? "name" : undefined;
 
     let findAndCountBlogs = await this.blogService.Take(
+      sortBy,
+      sortDirecrion,
       searchPropName,
       nameTerm,
       paginator.skipElements,
@@ -66,12 +69,22 @@ export class BlogController {
 
   //get -> hometask_13/api/blogs/{blogId}/posts
   @Get(':id/posts')
-  async GetBlogsPosts(@Param('id') id: string) {
-    let findPosts = await this.postService.Take("blogId", id);
+  async GetBlogsPosts(
+    @Param('id') id: string,
+    @Query('searchNameTerm') nameTerm: string | undefined,
+    @Query('sortBy') sortBy: keyof (PostDto) = "createdAt",
+    @Query('sortDirection') sortDirecrion: "desc" | "asc" = "desc",
+    @QueryPaginator() paginator: InputPaginator
+  ) {
+    let findPosts = await this.postService.Take(sortBy, sortDirecrion, "blogId", id);
 
     switch (findPosts.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        return findPosts.executionResultObject;
+        let posts = findPosts.executionResultObject.items;
+        let count = findPosts.executionResultObject.count;
+        let pagedPosts = new OutputPaginator(count, posts, paginator);
+
+        return pagedPosts;
         break;
 
       default:

@@ -13,12 +13,14 @@ export class CrudService<
     constructor(private repo: Repo) { }
 
 
-    public async Take(searchBy?: keyof (EntityType), searchValue?: string, skip: number = 0, limit: number = 10) {
-        let count = await this.repo.Count(searchBy, searchValue);
-        skip = count > skip? skip: 0;
+    public async Take(sortBy: keyof (EntityType), sortDirection: "asc" | "desc", searchBy?: keyof (EntityType), searchValue?: string, skip: number = 0, limit: number = 10,) {
 
-        let items = await this.repo.Find(searchBy, searchValue, skip, limit);
-        let formatedItems = items.map(item => item.toObject()) as ServiceDto<EntityType>[]; 
+        let count = await this.repo.Count(searchBy, searchValue);
+        skip = count > skip ? skip : 0;
+
+        let items = await this.repo.Find(sortBy, sortDirection, searchBy, searchValue, skip, limit);
+
+        let formatedItems = items.map(item => item.toObject()) as ServiceDto<EntityType>[];
 
         let result = {
             count: count,

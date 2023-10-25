@@ -13,14 +13,15 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     return await this.model.findById(id);
   }
 
-  async Find(property?: keyof (ModelType), propertyValue?: string, skip: number = 0, limit: number = 10): Promise<EntityDocument[]> {
-    let searchPattern = this.GetSearchPattern(property, propertyValue);
+  async Find(sortBy: keyof (ModelType), sortDirection: "asc" | "desc", property?: keyof (ModelType), propertyValue?: string, skip: number = 0, limit: number = 10): Promise<EntityDocument[]> {
+    let searchPattern = this.GetPattern(property, propertyValue);
+    let sortPattern = this.GetPattern(sortBy, sortDirection);
 
-    return await this.model.find(searchPattern).skip(skip).limit(limit) as EntityDocument[];
+    return await this.model.find(searchPattern).sort(sortPattern).skip(skip).limit(limit) as EntityDocument[];
   }
 
   async Count(key?: keyof (ModelType), value?: string) {
-    let searchPattern = this.GetSearchPattern(key, value);
+    let searchPattern = this.GetPattern(key, value);
 
     return await this.model.count(searchPattern);
   }
@@ -40,7 +41,7 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     return del.acknowledged;
   }
 
-  private GetSearchPattern(key?: keyof (ModelType), value?: string) {
+  private GetPattern(key?: keyof (ModelType), value?: string) {
     let searchPattern: any = {};
     if (key && value)
       searchPattern[key] = value;
