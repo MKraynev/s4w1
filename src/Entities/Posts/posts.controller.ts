@@ -73,7 +73,7 @@ export class PostController {
     //post -> /hometask_13/api/posts
     @Post()
     async SavePost(@Body() post: CreatePostDto) {
-        let savePost = await this.postService.Save(post);
+        let savePost = await this.postService.CreateByBlogId(post.blogId, post);
 
         switch (savePost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
@@ -123,7 +123,7 @@ export class PostController {
     }
 
     //delete -> /hometask_13/api/posts/{id}
-    @Delete("id")
+    @Delete(":id")
     @HttpCode(HttpStatus.NO_CONTENT)
     async DeletePost(@Param('id') id: string) {
         let deletePost = await this.postService.Delete(id);

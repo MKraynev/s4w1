@@ -26,7 +26,7 @@ export class PostDto {
   @Prop({ required: true })
   blogId: string;
 
-  @Prop({ default: "default blog name" })
+  @Prop({ required: true })
   blogName: string;
 
   createdAt: Date;
