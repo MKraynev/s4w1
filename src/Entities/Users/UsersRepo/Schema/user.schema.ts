@@ -18,9 +18,6 @@ export class UserDto {
     login: string;
 
     @Prop({ required: true })
-    password: string;
-
-    @Prop({ required: true })
     email: string;
 
     createdAt: Date;
