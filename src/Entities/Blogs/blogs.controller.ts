@@ -53,6 +53,7 @@ export class BlogController {
 
   //post -> hometask_13/api/blogs
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async saveBlog(@Body() blog: CreateBlogDto) {
     let savedBlog = await this.blogService.Save(blog);
 
