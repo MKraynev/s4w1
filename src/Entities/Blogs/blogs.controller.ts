@@ -81,11 +81,11 @@ export class BlogController {
 
     switch (findPosts.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        let decoratedPosts = findPosts.executionResultObject.items.map(post => {
+        let decoratedPosts = await Promise.all(findPosts.executionResultObject.items.map(async (post) => {
           let { updatedAt, ...rest } = post;
-          let decoratedPost = this.likeService.DecorateWithExtendedInfo(rest.id, rest);
+          let decoratedPost = await this.likeService.DecorateWithExtendedInfo(rest.id, rest);
           return decoratedPost;
-        });
+        }));
 
         let count = findPosts.executionResultObject.count;
         let pagedPosts = new OutputPaginator(count, decoratedPosts, paginator);
@@ -109,7 +109,7 @@ export class BlogController {
     switch (createPost.executionStatus) {
       case ServiceExecutionResultStatus.Success:
         let { updatedAt, ...returnPost } = createPost.executionResultObject;
-        let decoratedPost = this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
+        let decoratedPost = await this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
 
         return decoratedPost;
         break;

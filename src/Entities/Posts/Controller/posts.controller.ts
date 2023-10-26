@@ -5,7 +5,6 @@ import { CreatePostDto } from "../PostsRepo/Dtos/CreatePostDto";
 import { QueryPaginator } from "../../../Common/Routes/QueryParams/PaginatorQueryParams";
 import { PostDto } from "../PostsRepo/Schema/post.schema";
 import { InputPaginator, OutputPaginator } from "../../../Common/Paginator/Paginator";
-import { ExtendedLikeInfo } from "../../Likes/Entities/ExtendedLikeInfo";
 import { LikeService } from "../../Likes/likes.service";
 
 @Controller("posts")
@@ -24,12 +23,12 @@ export class PostController {
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
                 let count = findPost.executionResultObject.count;
-                let decoratedPosts = findPost.executionResultObject.items.map(post => {
+                let decoratedPosts = await Promise.all(findPost.executionResultObject.items.map(async (post) => {
 
                     let { updatedAt, ...rest } = post;
-                    let decoratedPost = this.likeService.DecorateWithExtendedInfo(rest.id, rest)
+                    let decoratedPost = await this.likeService.DecorateWithExtendedInfo(rest.id, rest)
                     return decoratedPost;
-                });
+                }));
                 let pagedPosts = new OutputPaginator(count, decoratedPosts, paginator)
                 return pagedPosts;
                 break;
@@ -47,7 +46,7 @@ export class PostController {
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
                 let { updatedAt, ...returnPost } = findPost.executionResultObject;;
-                let decoratedPost = this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
+                let decoratedPost = await this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
                 return decoratedPost;
                 break;
 
@@ -75,7 +74,7 @@ export class PostController {
                 //Задавать логику лайков в посты нет желания
                 //Делать отдельный Join repo?
                 let { updatedAt, ...returnPost } = savePost.executionResultObject;
-                let decoratedPost = this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
+                let decoratedPost = await this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
                 return decoratedPost;
                 break;
 
@@ -97,8 +96,8 @@ export class PostController {
         switch (updatePost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
                 let { updatedAt, ...returnPost } = updatePost.executionResultObject;
-                let decoratedPost = this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
-                
+                let decoratedPost = await this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
+
                 return decoratedPost;
                 break;
 
