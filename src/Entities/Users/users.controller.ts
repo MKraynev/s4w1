@@ -40,7 +40,10 @@ export class UserController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    async SaveUser(@Body() user: CreateUserDto) {
+    async SaveUser(
+        @Body() user: CreateUserDto,
+        @Body('password') password: string
+    ) {
         let saveUser = await this.userService.Save(user);
 
         switch (saveUser.executionStatus) {

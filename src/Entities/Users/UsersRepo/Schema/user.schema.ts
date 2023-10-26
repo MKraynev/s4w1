@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
+import { CreateUserDto } from "../Dtos/CreateUserDto";
 
 export type UserDocument = HydratedDocument<UserDto>
 
@@ -13,7 +14,7 @@ export type UserDocument = HydratedDocument<UserDto>
         }
     }
 })
-export class UserDto {
+export class UserDto extends CreateUserDto {
     @Prop({ required: true })
     login: string;
 
