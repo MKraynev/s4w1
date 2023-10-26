@@ -1,4 +1,5 @@
 import { HydratedDocument, Model } from "mongoose";
+import { MongooseRepoFindPattern } from "./Searcher/MongooseRepoFindPattern";
 
 export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedDocument<ModelType>>{
   constructor(private model: Model<ModelType>) { }
@@ -15,7 +16,6 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
 
   async Find(sortBy: keyof (ModelType), sortDirection: "asc" | "desc", property?: keyof (ModelType), propertyValue?: string, skip: number = 0, limit: number = 10): Promise<EntityDocument[]> {
     let searchPattern = this.GetSearchPattern(property, propertyValue);
-    //"name": { $regex: sorter.searchNameTerm, $options: 'i' }
     let sortPattern = this.GetSortPattern(sortBy, sortDirection);
 
     return await this.model.find(searchPattern).sort(sortPattern).skip(skip).limit(limit).exec() as EntityDocument[];
@@ -25,6 +25,26 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     let searchPattern = this.GetSearchPattern(key, value);
 
     return await this.model.count(searchPattern);
+  }
+
+  async FindByPatterns(findPattern: MongooseRepoFindPattern<ModelType>, sortBy: keyof (ModelType), sortDirection: "asc" | "desc", skip: number = 0, limit: number = 10): Promise<EntityDocument[]> {
+    try{
+      let sorter = this.GetSortPattern(sortBy, sortDirection);
+
+      return await this.model.find(findPattern.value).sort(sorter).skip(skip).limit(limit).exec() as EntityDocument[];
+    }
+    catch{
+      return []
+    }
+  }
+
+  async CountByPattern(findPattern: MongooseRepoFindPattern<ModelType>){
+    try{
+      return await this.model.count(findPattern.value);
+    }
+    catch{
+      return 0;
+    }
   }
 
   async Update(document: EntityDocument) {

@@ -14,11 +14,13 @@ export class UserController {
     }
     @Get()
     async GetUsers(
+        @Query('searchLoginTerm') loginTerm: string | undefined,
+        @Query('searchEmailTerm') emailTerm: string | undefined,
         @Query('sortBy') sortBy: keyof (UserDto) = "createdAt",
         @Query('sortDirection') sortDirecrion: "desc" | "asc" = "desc",
         @QueryPaginator() paginator: InputPaginator
     ) {
-        let findUsers = await this.userService.Take(sortBy, sortDirecrion, undefined, undefined, paginator.skipElements, paginator.pageSize);
+        let findUsers = await this.userService.TakeByLoginAndEmail(sortBy, sortDirecrion, loginTerm, emailTerm, paginator.skipElements, paginator.pageSize);
 
         switch (findUsers.executionStatus) {
             case ServiceExecutionResultStatus.Success:
