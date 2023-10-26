@@ -81,18 +81,14 @@ export class BlogController {
 
     switch (findPosts.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        let posts = findPosts.executionResultObject.items.map(post => { 
-          let {updatedAt, ...rest} = post;
-          let likeBuff:any ={
-            extendedLikesInfo: LikeService.GetEmptyExtendedData()
-          }
-          let result = {...rest, ...likeBuff}
-          return result;
+        let decoratedPosts = findPosts.executionResultObject.items.map(post => {
+          let { updatedAt, ...rest } = post;
+          let decoratedPost = this.likeService.DecorateWithExtendedInfo(rest.id, rest);
+          return decoratedPost;
         });
-        
 
         let count = findPosts.executionResultObject.count;
-        let pagedPosts = new OutputPaginator(count, posts, paginator);
+        let pagedPosts = new OutputPaginator(count, decoratedPosts, paginator);
 
         return pagedPosts;
         break;
@@ -112,13 +108,10 @@ export class BlogController {
 
     switch (createPost.executionStatus) {
       case ServiceExecutionResultStatus.Success:
-        let {updatedAt, ...returnPost} = createPost.executionResultObject;
-        let likeEmtyData: any = LikeService.GetEmptyExtendedData();
-        let buff: any = {
-          extendedLikesInfo: likeEmtyData
-        }
-        let result = { ...returnPost, ...buff }
-        return result;
+        let { updatedAt, ...returnPost } = createPost.executionResultObject;
+        let decoratedPost = this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
+
+        return decoratedPost;
         break;
 
       default:

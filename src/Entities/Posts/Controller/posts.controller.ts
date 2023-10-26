@@ -1,16 +1,16 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put, Query } from "@nestjs/common";
-import { PostService } from "./posts.service";
-import { ServiceExecutionResultStatus } from "../../Common/Services/Types/ServiceExecutionStatus";
-import { CreatePostDto } from "./PostsRepo/Dtos/CreatePostDto";
-import { QueryPaginator } from "../../Common/Routes/QueryParams/PaginatorQueryParams";
-import { PostDto } from "./PostsRepo/Schema/post.schema";
-import { InputPaginator, OutputPaginator } from "../../Common/Paginator/Paginator";
-import { ExtendedLikeInfo } from "../Likes/Entities/ExtendedLikeInfo";
-import { LikeService } from "../Likes/likes.service";
+import { PostService } from "../posts.service";
+import { ServiceExecutionResultStatus } from "../../../Common/Services/Types/ServiceExecutionStatus";
+import { CreatePostDto } from "../PostsRepo/Dtos/CreatePostDto";
+import { QueryPaginator } from "../../../Common/Routes/QueryParams/PaginatorQueryParams";
+import { PostDto } from "../PostsRepo/Schema/post.schema";
+import { InputPaginator, OutputPaginator } from "../../../Common/Paginator/Paginator";
+import { ExtendedLikeInfo } from "../../Likes/Entities/ExtendedLikeInfo";
+import { LikeService } from "../../Likes/likes.service";
 
 @Controller("posts")
 export class PostController {
-    constructor(private postService: PostService) { }
+    constructor(private postService: PostService, private likeService: LikeService) { }
 
     @Get()
     async GetPosts(
@@ -24,15 +24,13 @@ export class PostController {
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
                 let count = findPost.executionResultObject.count;
-                let posts = findPost.executionResultObject.items.map(post => {
-                    let buff: any = {
-                        extendedLikesInfo: LikeService.GetEmptyExtendedData()
-                    }
-                    let {updatedAt, ...rest} = post;
-                    let result = {...rest, ...buff};
-                    return result;
+                let decoratedPosts = findPost.executionResultObject.items.map(post => {
+
+                    let { updatedAt, ...rest } = post;
+                    let decoratedPost = this.likeService.DecorateWithExtendedInfo(rest.id, rest)
+                    return decoratedPost;
                 });
-                let pagedPosts = new OutputPaginator(count, posts, paginator)
+                let pagedPosts = new OutputPaginator(count, decoratedPosts, paginator)
                 return pagedPosts;
                 break;
 
@@ -48,13 +46,9 @@ export class PostController {
 
         switch (findPost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
-                let {updatedAt, ...returnPost} = findPost.executionResultObject;;
-                let likeEmtyData = LikeService.GetEmptyExtendedData();
-                let buff: any = {
-                    extendedLikesInfo: likeEmtyData
-                  }
-                  let result = { ...returnPost, ...buff }
-                  return result;
+                let { updatedAt, ...returnPost } = findPost.executionResultObject;;
+                let decoratedPost = this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
+                return decoratedPost;
                 break;
 
             default:
@@ -80,13 +74,9 @@ export class PostController {
                 //TODO Возвращаемая сущность содержит две инфы от постов и лайков
                 //Задавать логику лайков в посты нет желания
                 //Делать отдельный Join repo?
-                let {updatedAt, ...returnPost} = savePost.executionResultObject;
-                let likeEmtyData = LikeService.GetEmptyExtendedData();
-                let buff: any = {
-                    extendedLikesInfo: likeEmtyData
-                  }
-                  let result = { ...returnPost, ...buff }
-                  return result;
+                let { updatedAt, ...returnPost } = savePost.executionResultObject;
+                let decoratedPost = this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
+                return decoratedPost;
                 break;
 
             default:
@@ -106,13 +96,10 @@ export class PostController {
 
         switch (updatePost.executionStatus) {
             case ServiceExecutionResultStatus.Success:
-                let {updatedAt, ...returnPost} = updatePost.executionResultObject;
-                let likeEmtyData = LikeService.GetEmptyExtendedData();
-                let buff: any = {
-                    extendedLikesInfo: likeEmtyData
-                  }
-                  let result = { ...returnPost, ...buff }
-                  return result;
+                let { updatedAt, ...returnPost } = updatePost.executionResultObject;
+                let decoratedPost = this.likeService.DecorateWithExtendedInfo(returnPost.id, returnPost);
+                
+                return decoratedPost;
                 break;
 
             default:

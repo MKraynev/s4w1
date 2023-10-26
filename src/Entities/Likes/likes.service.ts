@@ -3,11 +3,20 @@ import { LikesRepoService } from "./LikesRepo/likesRepo.service";
 import { ExtendedLikeInfo } from "./Entities/ExtendedLikeInfo";
 
 @Injectable()
-export class LikeService{
-    constructor(private likesRepo: LikesRepoService) {}
+export class LikeService {
+    constructor(private likesRepo: LikesRepoService) { }
 
-    public static GetEmptyExtendedData(){
+    public static GetEmptyExtendedData() {
         return new ExtendedLikeInfo();
+    }
+
+    public async DecorateWithExtendedInfo(searchById: string, object: any) {
+        let userInfo;
+        let likeStatistic;
+        //let extendedLikesInfo = userInfo + likeStatistic
+        let extendedLikesInfo = LikeService.GetEmptyExtendedData();
+        let result = { ...object, extendedLikesInfo }
+        return result;
     }
 }
 
