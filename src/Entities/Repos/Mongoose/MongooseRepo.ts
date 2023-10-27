@@ -4,7 +4,6 @@ import { MongooseRepoFindPattern } from "./Searcher/MongooseRepoFindPattern";
 export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedDocument<ModelType>>{
   constructor(private model: Model<ModelType>) { }
 
-
   async Save(createDTO: CreateDTO | ModelType): Promise<EntityDocument> {
     const createEntity = await this.model.create(createDTO);
     return (await createEntity.save() as EntityDocument);
@@ -70,7 +69,6 @@ export class MongooseRepo<ModelType, CreateDTO, EntityDocument extends HydratedD
     return searchPattern;
   }
   private GetSearchPattern(key?: keyof (ModelType), value?: string) {
-    //"name": { $regex: sorter.searchNameTerm, $options: 'i' }
     let searchPattern: any = {};
     if (key && value)
       searchPattern[key] = { $regex: value, $options: 'i' };

@@ -9,9 +9,8 @@ import { CreateUserDto } from "./UsersRepo/Dtos/CreateUserDto";
 
 @Controller('users')
 export class UserController {
-    constructor(private userService: UserService) {
-
-    }
+    constructor(private userService: UserService) {}
+    
     @Get()
     async GetUsers(
         @Query('searchLoginTerm') loginTerm: string | undefined,

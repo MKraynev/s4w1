@@ -17,8 +17,6 @@ export class CrudService<
 {
     constructor(private repo: Repo) { }
 
-   
-
     public async Take(sortBy: keyof (EntityType), sortDirection: "asc" | "desc", searchBy?: keyof (EntityType), searchValue?: string, skip: number = 0, limit: number = 10)
     :Promise <ServiceExecutionResult<ServiceExecutionResultStatus, TakeResult<ServiceDto<EntityType>>>>{
 
@@ -76,10 +74,4 @@ export class CrudService<
 
         return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, countRes)
     }
-
-    // private async Find(property?: keyof (EntityType), propertyValue?: string, skip?: number, limit?: number): Promise<ServiceExecutionResult<ServiceExecutionResultStatus, ServiceDto<EntityType>[]>> {
-    //     let objects = (await this.repo.Find(property, propertyValue, skip, limit)).map(entityObj => entityObj.toObject()) as ServiceDto<EntityType>[];
-
-    //     return new ServiceExecutionResult(ServiceExecutionResultStatus.Success, objects)
-    // }
 }
